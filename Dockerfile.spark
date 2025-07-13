@@ -1,0 +1,15 @@
+# Dockerfile.spark
+# Use the same base image as your Spark cluster for consistency
+FROM bitnami/spark:3.5.0
+
+# Set a working directory inside the container
+WORKDIR /app
+
+# Copy your Python script into the image
+COPY spark_stream.py .
+
+# Install the cassandra-driver library that your script needs
+RUN pip install cassandra-driver
+
+# This is the command that will run automatically when the container starts
+CMD ["spark-submit", "--master", "spark://spark-master:7077", "--packages", "com.datastax.spark:spark-cassandra-connector_2.12:3.5.0,org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.0,org.apache.kafka:kafka-clients:3.4.1", "spark_stream.py"]
